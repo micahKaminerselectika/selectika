@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+
+    <job job-id="Selectika Export CSV" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id=""/>
+            <step step-id="Build CSV" type="custom.Selectika.ProductExportCSV" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="TargetFolder">src/selectika/feed</parameter>
+                    <parameter name="ProductTypeStrategy">Category</parameter>
+                    <parameter name="ProductTypeCategoryDepth">3</parameter>
+                    <parameter name="GenderStrategy">Category</parameter>
+                    <parameter name="GenderCategoryDepth">0</parameter>
+                    <parameter name="ImageType">large</parameter>
+                    <parameter name="ParentProductStrategy">Master Product</parameter>
+                    <parameter name="ColorStrategy">Variation Attribute Value</parameter>
+                    <parameter name="ColorVariationAttributeName">color</parameter>
+                    <parameter name="SizeStrategy">Variation Attribute Value</parameter>
+                    <parameter name="SizeVariationAttributeName">size</parameter>
+                    <parameter name="BrandField">brand</parameter>
+                </parameters>
+            </step>
+            <step step-id="Upload FTP" type="custom.Selectika.FtpUpload" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ServiceID">selectika.ftp</parameter>
+                    <parameter name="FilePattern">.*\.csv</parameter>
+                    <parameter name="SourceFolder">src/selectika/feed</parameter>
+                    <parameter name="TargetFolder"></parameter>
+                    <parameter name="ArchiveFolder">src/archive/selectika</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules>
+            <on-running runtime-threshold="60m" enabled="false">
+                <mark-job-as-hanging/>
+            </on-running>
+        </rules>
+        <triggers>
+            <run-once enabled="false">
+                <date>2022-12-26Z</date>
+                <time>12:35:00.000Z</time>
+            </run-once>
+        </triggers>
+    </job>
+
+</jobs>
